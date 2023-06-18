@@ -1,25 +1,40 @@
-import FormPost from "./Form"
+"use client";
+import { useEffect, useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
+import FormPost from './Form';
 
-async function getPosts() {
-  const res = await fetch(`${process.env.BASE_URL}/api/getPosts`)
-  if(!res.ok){
-    console.log(res)
+type Post = {
+  id: number;
+  title: string;
+};
+
+export default function Home() {
+  const [data, setData] = useState<Post[]>([]);
+
+  useEffect(() => {
+    getPosts().then((responseData) => {
+      setData(responseData);
+    });
+  }, [setData]);
+
+  async function getPosts() {
+    try {
+      const response: AxiosResponse<Post[]> = await axios.get('/api/getPosts');
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
-  return res.json()
-}
-
-
-
-export default async function Home() {
-  const data : { id:number, title: string }[] = await getPosts()
-  console.log(data)
 
   return (
     <main>
-      <FormPost/>
-      {data.map((post) => (
-        <p key={post.id}>{post.title}</p>
-      ))}
+      <FormPost />
+      {data.length === 0 ? (
+        <p>Loading...</p>
+      ) : (
+        data.map((post) => <p key={post.id}>{post.title}</p>)
+      )}
     </main>
-  )
+  );
 }
