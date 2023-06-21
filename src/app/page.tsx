@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import FormPost from './Form';
 import FormUpdate from './FormUpdate';
+import axios from 'axios';
 
 type Post = {
   id: number;
@@ -28,27 +29,7 @@ export default function Home() {
     }
   }
 
-  async function updatePost(id: number, newTitle: string) {
-    try {
-      const response = await fetch(`/api/updatePosts/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ title: newTitle }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (response.ok) {
-        // Atualização bem-sucedida
-        // Faça algo, como exibir uma mensagem de sucesso ou atualizar a lista de posts
-      } else {
-        // Tratamento de erro
-        console.error('Failed to update the post');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+
 
   useEffect(() => {
     getPosts().then((responseData) => {
@@ -59,7 +40,7 @@ export default function Home() {
   return (
     <main>
       <FormPost />
-      <FormUpdate updatePost={updatePost}/>
+      <FormUpdate/>
       {data.length === 0 ? (
         <p>Loading...</p>
       ) : (

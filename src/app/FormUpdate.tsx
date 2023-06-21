@@ -1,16 +1,38 @@
+import axios from 'axios';
 import { useState } from 'react';
 
-type FormPostProps = {
-  updatePost: (id: number, newTitle: string) => void;
-};
 
-export default function FormUpdate({ updatePost }: FormPostProps) {
+
+export default function FormUpdate() {
   const [id, setId] = useState(0);
   const [title, setTitle] = useState('');
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     updatePost(id, title);
+  }
+
+  
+  async function updatePost(id: number, newTitle: string) {
+    console.log(id)
+    try {
+      const response = await fetch(`/api/updatePosts`,{
+        method: "PUT",
+        body: JSON.stringify({ id, title }),
+      });
+      console.log(newTitle)
+
+  
+      if (response.status === 200) {
+        // Atualização bem-sucedida
+        // Faça algo, como exibir uma mensagem de sucesso ou atualizar a lista de posts
+      } else {
+        // Tratamento de erro
+        console.error('Failed to update the post');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
